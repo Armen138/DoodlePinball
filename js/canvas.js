@@ -25,6 +25,9 @@ define(function() {
 				}
 				return clone;
 			},
+			clear: function() {
+				canvas.width = canvas.width;
+			},
 			size: function(w, h) {
 				if(w) {
 					if(typeof(w) === "object") {
