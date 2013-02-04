@@ -36,6 +36,9 @@ define(["events", "flipper", "box2d.min"], function(events, Flipper) {
 				flipper.draw();
 			}
 		};
+		window.addEventListener("click", function() {
+			flipper.flip();
+		});
 	};
 	return Table;
 });
