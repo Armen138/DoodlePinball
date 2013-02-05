@@ -1,6 +1,8 @@
 define(["box2d.min"], function(){
 
 	var Flipper = function(world, canvas) {
+
+		var flip = false;
 		var fixDef = new Box2D.Dynamics.b2FixtureDef,
 			bodyDef = new Box2D.Dynamics.b2BodyDef;
 		bodyDef.type = Box2D.Dynamics.b2Body.b2_dynamicBody;
@@ -11,7 +13,7 @@ define(["box2d.min"], function(){
 		/*fixDef.shape.SetAsEdge( new Box2D.Common.Math.b2Vec2(0, 0),
 								new Box2D.Common.Math.b2Vec2(8, 0));*/
 		fixDef.shape.SetAsBox(2.0, 0.1);
-		var position = {x: 1, y: 24};
+		var position = {x: 10, y: 10};
 		bodyDef.position.Set(position.x, position.y);
 		body = world.CreateBody(bodyDef);
 		body.CreateFixture(fixDef);
@@ -24,24 +26,42 @@ define(["box2d.min"], function(){
 		anchor.CreateFixture(fixDef);
 
 		var joint = new Box2D.Dynamics.Joints.b2RevoluteJointDef();
+		joint.enableMotor = false;
+		joint.motorSpeed = -1;
+		joint.maxMotorTorque = 100;
+		joint.enableLimit = true;
+/*		joint.upperAngle = -2.5;
+		joint.lowerAngle = -3.3;*/
+		joint.upperAngle = 4 * Math.PI;
+		joint.lowerAngle = 0;
+
     	joint.Initialize(anchor, body, anchor.GetWorldCenter());
-    	world.CreateJoint(joint);
+    	var revoluteJoint = world.CreateJoint(joint);
 		return {
 			draw: function() {
 				var position = body.GetPosition();
 				var angle = body.GetAngle();
 				canvas.context.save();
-				canvas.context.rotate(angle);
 				canvas.context.lineWidth = 4;
 				canvas.context.translate(position.x * 50, position.y * 50);
-				canvas.context.moveTo(0, 0);
-				canvas.context.lineTo(8 * 50, 0);
-				canvas.context.stroke();
+				canvas.context.rotate(angle);				
+				canvas.context.strokeRect(0, 0, 2 * 50 - 25, 0.1 * 50 - 2.5);
 				canvas.context.restore();
+
+				canvas.context.save();
+				position = anchor.GetPosition();
+				canvas.context.translate(position.x * 50, position.y * 50);
+				canvas.context.strokeStyle = "red";
+				canvas.context.lineWidth = 4;
+				canvas.context.strokeRect(0, 0, 0.1 * 50 - 2.5, 0.1 * 50 - 2.5);
+				canvas.context.restore();
+
+
 			},
 			flip: function() {
-				var force = 30;
-				body.ApplyTorque(force);				
+				console.log("flip");
+				flip = !flip;
+				revoluteJoint.EnableMotor(flip);
 			}
 		}
 	};

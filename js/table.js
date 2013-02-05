@@ -31,14 +31,15 @@ define(["events", "flipper", "box2d.min"], function(events, Flipper) {
 		world.CreateBody(bodyDef).CreateFixture(fixDef);		
 
 		var flipper = Flipper(world, canvas);
+		window.addEventListener("click", function() {
+			flipper.flip();
+		});		
 		return {
 			draw: function() {
 				flipper.draw();
 			}
 		};
-		window.addEventListener("click", function() {
-			flipper.flip();
-		});
+
 	};
 	return Table;
 });
