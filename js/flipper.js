@@ -32,7 +32,8 @@ define(["box2d.min"], function(){
 		joint.enableLimit = true;
 /*		joint.upperAngle = -2.5;
 		joint.lowerAngle = -3.3;*/
-		joint.upperAngle = 4 * Math.PI;
+		joint.referenceAngle = 0;
+		joint.upperAngle = 4;
 		joint.lowerAngle = 0;
 
     	joint.Initialize(anchor, body, anchor.GetWorldCenter());
@@ -61,7 +62,8 @@ define(["box2d.min"], function(){
 			flip: function() {
 				console.log("flip");
 				flip = !flip;
-				revoluteJoint.EnableMotor(flip);
+				//revoluteJoint.EnableMotor(flip);
+				revoluteJoint.SetMotorSpeed(flip ? -1 : 1);
 			}
 		}
 	};
