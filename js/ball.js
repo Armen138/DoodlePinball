@@ -6,9 +6,9 @@ define(["box2d.min"], function() {
 			bodyDef = new Box2D.Dynamics.b2BodyDef,
 			body = null;
 		var kick = false;
-		fixDef.friction = 0.2;
-		fixDef.density = 1;
-		fixDef.restitution = 0.2;	
+		fixDef.friction = 0.01;
+		fixDef.density = 0.3;
+		fixDef.restitution = 0.5;	
 		bodyDef.type = Box2D.Dynamics.b2Body.b2_dynamicBody;
 		fixDef.shape = new Box2D.Collision.Shapes.b2CircleShape(0.64);
 		fixDef.userData = this;

@@ -30,13 +30,27 @@ define(["events", "flipper", "box2d.min"], function(events, Flipper) {
 		bodyDef.position.Set(16, 0);
 		world.CreateBody(bodyDef).CreateFixture(fixDef);		
 
-		var flipper = Flipper(world, canvas);
+		var flipper = Flipper(world, canvas, 1);
+		var flipper2 = Flipper(world, canvas, -1);
 		window.addEventListener("click", function() {
 			flipper.flip();
 		});		
 		return {
 			draw: function() {
 				flipper.draw();
+				flipper2.draw();
+			},
+			left: function(toggle) {
+				if(toggle) {
+					flipper.on();
+					flipper2.on();
+				} else {
+					flipper.off();
+					flipper2.off();
+				}
+			},
+			right: function(toggle) {
+
 			}
 		};
 

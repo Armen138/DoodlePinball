@@ -23,8 +23,17 @@ define(["canvas", "resources", "ball", "table", "box2d.min"], function(Canvas, R
 			setTimeout(game.run, 17);
 		}
 	};
-	window.addEventListener("keyup", function(e){
+	window.addEventListener("keyup", function(e){		
+		if(e.keyCode === 32) {
+			table.left(false);
+			return;
+		}
 		ball.boop(); 
+	});
+	window.addEventListener("keydown", function(e) {
+		if(e.keyCode === 32) {
+			table.left(true);
+		}
 	});
 	return game;
 });

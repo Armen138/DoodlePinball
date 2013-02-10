@@ -1,7 +1,12 @@
 define(["box2d.min"], function(){
 
-	var Flipper = function(world, canvas) {
+	var Flipper = function(world, canvas, side) {
 
+		var position = {x: 4, y: 30};
+		var length = 3.5;
+		if(side < 0) {
+			position.x = 12;
+		}
 		var flip = false;
 		var fixDef = new Box2D.Dynamics.b2FixtureDef,
 			bodyDef = new Box2D.Dynamics.b2BodyDef;
@@ -10,11 +15,11 @@ define(["box2d.min"], function(){
 		fixDef.density = 1;
 		fixDef.restitution = 0.2;
 		fixDef.shape = new Box2D.Collision.Shapes.b2PolygonShape();
-		/*fixDef.shape.SetAsEdge( new Box2D.Common.Math.b2Vec2(0, 0),
-								new Box2D.Common.Math.b2Vec2(8, 0));*/
-		fixDef.shape.SetAsBox(2.0, 0.1);
-		var position = {x: 10, y: 10};
-		bodyDef.position.Set(position.x + 1, position.y);
+
+
+		fixDef.shape.SetAsBox(length / 2, 0.2);
+		
+		bodyDef.position.Set(position.x + ((length / 2 - 0.2) * side), position.y);
 		var body = world.CreateBody(bodyDef);
 		body.CreateFixture(fixDef);
 
@@ -25,23 +30,14 @@ define(["box2d.min"], function(){
 		var anchor = world.CreateBody(bodyDef);
 		anchor.CreateFixture(fixDef);
 
-		bodyDef.type = Box2D.Dynamics.b2Body.b2_staticBody;
-		fixDef.shape = new Box2D.Collision.Shapes.b2PolygonShape();
-		fixDef.shape.SetAsBox(0.1, 0.1);
-		bodyDef.position.Set(position.x + 1.4, position.y + 0.4);
-		//var anchor2 = world.CreateBody(bodyDef);
-		//anchor2.CreateFixture(fixDef);
-
 		var joint = new Box2D.Dynamics.Joints.b2RevoluteJointDef();
-		joint.enableMotor = true;
-		joint.motorSpeed = -1;
+		joint.enableMotor = false;
+		joint.motorSpeed = -100;
 		joint.maxMotorTorque = 100;
 		joint.enableLimit = true;
-/*		joint.upperAngle = -2.5;
-		joint.lowerAngle = -3.3;*/
 		joint.referenceAngle = 0;
-		joint.upperAngle = 4;
-		joint.lowerAngle = 0;
+		joint.upperAngle = 0.2;
+		joint.lowerAngle = -0.2;
 
     	joint.Initialize(anchor, body, anchor.GetWorldCenter());
     	var revoluteJoint = world.CreateJoint(joint);
@@ -53,7 +49,7 @@ define(["box2d.min"], function(){
 				canvas.context.lineWidth = 4;
 				canvas.context.translate(position.x * 50, position.y * 50);
 				canvas.context.rotate(angle);				
-				canvas.context.strokeRect(-50, -2.5, 2 * 50, 0.1 * 50);
+				canvas.context.strokeRect((-1 * (length / 2) * 50) - (7 * side), -13, length * 50, 0.5 * 50);
 				canvas.context.restore();
 
 				canvas.context.save();
@@ -63,20 +59,20 @@ define(["box2d.min"], function(){
 				canvas.context.lineWidth = 4;
 				canvas.context.strokeRect(0, 0, 0.1 * 50 - 2.5, 0.1 * 50 - 2.5);
 				canvas.context.restore();
-/*
-				canvas.context.save();
-				position = anchor2.GetPosition();
-				canvas.context.translate(position.x * 50, position.y * 50);
-				canvas.context.strokeStyle = "red";
-				canvas.context.lineWidth = 4;
-				canvas.context.strokeRect(0, 0, 0.1 * 50 - 2.5, 0.1 * 50 - 2.5);
-				canvas.context.restore();*/
+
+			},
+			on: function() {
+				revoluteJoint.EnableMotor(true);
+				revoluteJoint.SetMotorSpeed(-1000 * side);
+			},
+			off: function() {
+				revoluteJoint.EnableMotor(false);
 			},
 			flip: function() {
 				console.log("flip");
 				flip = !flip;
-				//revoluteJoint.EnableMotor(flip);
-				revoluteJoint.SetMotorSpeed(flip ? -1 : 1);
+				revoluteJoint.EnableMotor(flip);
+				revoluteJoint.SetMotorSpeed(-1000 * side);
 			}
 		}
 	};
